@@ -1,0 +1,28 @@
+version: "3.3"
+
+services:
+  db:
+    image: "microsoft/mssql-server-linux:latest"
+    environment:
+      SA_PASSWORD: "MyPass@word"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    
+  app:
+    image: personapi
+    build:
+      context: .
+      dockerfile: TPICAP.Persons.API/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+      
+  migration:
+    build:
+      context: .
+      dockerfile: TPICAP.Persons.Persistence/Dockerfile
+    depends_on: 
+      - db
